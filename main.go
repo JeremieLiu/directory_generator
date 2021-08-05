@@ -99,7 +99,7 @@ func CheckOrCreateFile(fileName string) error {
 }
 
 func AppendContentToFile(fileName, content string) error {
-	f, err := os.OpenFile(fileName, os.O_APPEND, 0x666)
+	f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_APPEND, 0x666)
 	if err != nil {
 		return err
 	}
