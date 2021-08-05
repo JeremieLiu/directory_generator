@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	SourcePath     = `D:\sandbox_source\match`
+	SourcePath     = `./test_dir`
 	PathTitle      = "|--"
 	GidFolder      = ".git"
 	OutPutFileName = "./project_folder_%d.md"
@@ -19,7 +19,7 @@ var (
 )
 
 func main() {
-	result := GetAllDir(SourcePath)
+	result := GetAllInnerFileOrDir(SourcePath)
 	outFileName := fmt.Sprintf(OutPutFileName, time.Now().Unix())
 	if err := CheckOrCreateFile(outFileName); err != nil {
 		fmt.Printf("[ERROR] CheckOrCreateFile error:%s \r\n", err)
@@ -31,7 +31,7 @@ func main() {
 
 // directory utils------------------------------------------------------------------------------------------------------
 // 获取文件目录下所有的文件名称
-func GetAllDir(rootPath string) string {
+func GetAllInnerFileOrDir(rootPath string) string {
 	fileInfoList, err := ioutil.ReadDir(rootPath)
 	if err != nil {
 		fmt.Printf("ReadDir err:%s \r\n", err)
@@ -47,14 +47,10 @@ func GetAllDir(rootPath string) string {
 
 		// 当前文件名的全路径
 		currentPath := filepath.Join(rootPath, currentName)
-
-		if IsDir(currentPath) {
-			//fmt.Println(FormatPathPattern(currentPath)) //打印当前文件或目录下的文件或目录名
-			res = fmt.Sprintf("%s%s\n", res, fmt.Sprintf(FormatPathPattern(currentPath)))
-			GetAllDir(currentPath)
-		}
-		//fmt.Println(FormatPathPattern(currentPath)) //打印当前文件或目录下的文件或目录名
 		res = fmt.Sprintf("%s%s\n", res, fmt.Sprintf(FormatPathPattern(currentPath)))
+		if IsDir(currentPath) {
+			GetAllInnerFileOrDir(currentPath)
+		}
 	}
 	return res
 }
